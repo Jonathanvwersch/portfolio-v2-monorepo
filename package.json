@@ -1,0 +1,52 @@
+{
+  "name": "blog-and-portfolio",
+  "version": "1.0.0",
+  "description": "My home on the internet",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "clean:all": "find . -type d \\( -name 'dist' -o -name 'node_modules' -o -name '.next' -o -name '.turbo' -o -name '.tsup' \\) -exec rm -rf {} +; find . -type f -name '*.tsbuildinfo' -exec rm -f {} +",
+    "clean:build": "find apps/ packages/ -type d \\( -name 'dist' -o -name '.next' -o -name '.turbo' -o -name '.tsup' \\) -exec rm -rf {} +; find apps/ packages/ -type f -name '*.tsbuildinfo' -exec rm -f {} +",
+    "ts:type-check": "turbo run ts:type-check --concurrency=99 --continue",
+    "ts:lint": "turbo run ts:lint --concurrency=99 --continue",
+    "ts:lint:fix": "pnpm run ts:lint -- --fix",
+    "turbo:clean": "turbo daemon clean",
+    "build": "turbo run build --concurrency=99 --continue",
+    "build:packages": "turbo run build:packages --concurrency=99 --continue",
+    "dev": "turbo run dev --concurrency=99 --continue",
+    "update:deps": "npx npm-check-updates -ws --root -u && pnpm install",
+    "create-package": "node create-package.js"
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "packageManager": "pnpm@9.7.1",
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git"
+  },
+  "devDependencies": {
+    "@jest/types": "^29.6.3",
+    "@microsoft/api-extractor": "^7.47.6",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "chokidar": "^3.6.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "glob": "^11.0.0",
+    "prettier": "^3.3.3",
+    "readline-sync": "^1.4.10",
+    "tsup": "^8.2.4",
+    "turbo": "^2.0.14",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "react": "^18.3.1"
+  }
+}

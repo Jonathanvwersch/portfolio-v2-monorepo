@@ -1,0 +1,29 @@
+{
+  "name": "@packages/assets",
+  "version": "1.0.0",
+  "sideEffects": false,
+  "license": "ISC",
+  "scripts": {
+    "ts:type-check": "tsc --noEmit",
+    "ts:lint": "eslint \"src/**/*.{js,ts}\" --max-warnings=0 --color",
+    "ts:lint:fix": "pnpm run ts:lint -- --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup",
+    "build:packages": "pnpm run build",
+    "build:packages:dev": "NODE_ENV=development pnpm run build",
+    "dev": "NODE_ENV=development node ../watch.js"
+  },
+  "exports": {
+    "./icons/*": {
+      "import": {
+        "types": "./dist/icons/*.d.ts",
+        "require": "./dist/icons/*.cjs",
+        "default": "./dist/icons/*.js"
+      }
+    }
+  },
+  "peerDependencies": {
+    "react": "~18",
+    "@types/react": "~18"
+  }
+}
