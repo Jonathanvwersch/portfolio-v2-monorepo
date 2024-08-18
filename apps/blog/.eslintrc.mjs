@@ -19,7 +19,6 @@ module.exports = {
   ],
   parserOptions: {
     project: true,
-    tsconfigRootDir: __dirname,
   },
   rules: {
     'prettier/prettier': 'error',

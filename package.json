@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "install:portfolio": "pnpm --filter @apps/portfolio... install",
+    "install:blog": "pnpm --filter @apps/blog... install",
     "clean:all": "find . -type d \\( -name 'dist' -o -name 'node_modules' -o -name '.next' -o -name '.turbo' -o -name '.tsup' \\) -exec rm -rf {} +; find . -type f -name '*.tsbuildinfo' -exec rm -f {} +",
     "clean:build": "find apps/ packages/ -type d \\( -name 'dist' -o -name '.next' -o -name '.turbo' -o -name '.tsup' \\) -exec rm -rf {} +; find apps/ packages/ -type f -name '*.tsbuildinfo' -exec rm -f {} +",
     "ts:type-check": "turbo run ts:type-check --concurrency=99 --continue",
