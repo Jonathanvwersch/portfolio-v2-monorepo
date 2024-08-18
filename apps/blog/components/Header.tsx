@@ -10,7 +10,8 @@ const Header = () => {
   const [origin, setOrigin] = useState('')
   
   useEffect(() => {
-    setOrigin(window.location.origin.split('.')[1])
+    const _origin = window.location.origin.split('.')[1]
+    setOrigin(`${window.location.protocol}//${_origin}.com`)
   }, [])
 
   let headerClass = 'flex items-center w-full bg-white dark:bg-gray-950 justify-between py-10'

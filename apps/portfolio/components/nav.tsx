@@ -1,5 +1,4 @@
 "use client";
-
 import { Logo } from "@packages/assets/icons/logo";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -12,7 +11,11 @@ export function Nav() {
 
   useEffect(() => {
     // Set the blog URL once the component has mounted (client-side only)
-    setBlogUrl(`${window.location.protocol}//blog.${window.location.host}`);
+    const host = window.location.host;
+    const blogHost = host.startsWith("www.")
+      ? host.replace("www.", "blog.")
+      : `blog.${host}`;
+    setBlogUrl(`${window.location.protocol}//${blogHost}`);
   }, []);
 
   const navItems = useMemo(
