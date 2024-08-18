@@ -2,10 +2,11 @@
   "name": "@apps/blog",
   "version": "2.2.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "next dev",
     "dev": "cross-env INIT_CWD=$PWD next dev -p 3001",
-    "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
+    "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-vm-modules --experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
@@ -14,6 +15,7 @@
   "dependencies": {
     "@headlessui/react": "1.7.19",
     "@next/bundle-analyzer": "14.2.3",
+    "@packages/assets": "workspace:*",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.12",
     "autoprefixer": "^10.4.13",
@@ -43,11 +45,11 @@
     "remark-github-blockquote-alert": "^1.2.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^3.4.3",
-    "unist-util-visit": "^5.0.0",
-    "@packages/assets": "workspace:*"
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
+    "@types/body-scroll-lock": "^3.1.2",
     "@types/mdx": "^2.0.12",
     "@types/react": "^18.2.73",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
@@ -70,5 +72,8 @@
     "*.+(js|jsx|ts|tsx|json|css|md|mdx)": [
       "prettier --write"
     ]
+  },
+  "overrides": {
+    "uri-js": "npm:uri-js-replace"
   }
 }

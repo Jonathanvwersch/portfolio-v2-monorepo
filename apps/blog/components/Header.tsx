@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react'
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
-import { Logo } from '@packages/assets/icons/logo'
 import Link from './Link'
-import MobileNav from './MobileNav'
+import { Logo } from 'assets/icons/logo'
 
 const Header = () => {
   const [origin, setOrigin] = useState('')

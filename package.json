@@ -47,6 +47,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "pliny": "0.2.1",
     "react": "^18.3.1"
   }
 }
