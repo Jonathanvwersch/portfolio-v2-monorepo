@@ -12,6 +12,8 @@
     "ts:lint:fix": "pnpm run ts:lint -- --fix",
     "turbo:clean": "turbo daemon clean",
     "build": "turbo run build --concurrency=99 --continue",
+    "build:portfolio": "turbo run build --filter='./apps/portfolio' --concurrency=99 --continue",
+    "build:blog": "turbo run build --filter='./apps/blog' --concurrency=99 --continue",
     "build:packages": "turbo run build:packages --concurrency=99 --continue",
     "dev": "turbo run dev --concurrency=99 --continue",
     "update:deps": "npx npm-check-updates -ws --root -u && pnpm install",

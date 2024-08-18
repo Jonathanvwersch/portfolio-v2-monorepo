@@ -1,14 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { LinkedIn } from "@packages/assets/icons/linkedin";
 import { Github } from "@packages/assets/icons/github";
 import { Twitter } from "@packages/assets/icons/twitter";
 
 export function Footer() {
-  const pathname = usePathname();
-
   return (
     <footer className="flex flex-col gap-5 w-full mx-auto mt-auto pt-5 pb-3">
       <div className="flex flex-row gap-4 mx-auto">

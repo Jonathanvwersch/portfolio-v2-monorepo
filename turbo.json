@@ -17,6 +17,10 @@
       "dependsOn": ["^build:packages"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".tsbuildinfo"]
     },
+    "build:portfolio": {
+      "dependsOn": ["^build:packages"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".tsbuildinfo"]
+    },
     "build:packages:dev": {
       "dependsOn": ["^build:packages:dev"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".tsbuildinfo"]

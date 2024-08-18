@@ -8,7 +8,7 @@ import { Logo } from 'assets/icons/logo'
 
 const Header = () => {
   const [origin, setOrigin] = useState('')
-
+  
   useEffect(() => {
     setOrigin(window.location.origin.split('.')[1])
   }, [])
