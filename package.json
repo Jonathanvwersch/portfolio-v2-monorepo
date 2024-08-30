@@ -26,7 +26,7 @@
     "packages/*",
     "apps/*"
   ],
-  "packageManager": "pnpm@9.7.1",
+  "packageManager": "pnpm@9.9.0",
   "author": "",
   "license": "MIT",
   "repository": {
@@ -34,11 +34,11 @@
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
-    "@microsoft/api-extractor": "^7.47.6",
-    "@typescript-eslint/eslint-plugin": "^8.1.0",
-    "@typescript-eslint/parser": "^8.1.0",
+    "@microsoft/api-extractor": "^7.47.7",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
     "chokidar": "^3.6.0",
-    "eslint": "^9.9.0",
+    "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.2.1",
@@ -47,11 +47,11 @@
     "prettier": "^3.3.3",
     "readline-sync": "^1.4.10",
     "tsup": "^8.2.4",
-    "turbo": "^2.0.14",
+    "turbo": "^2.1.1",
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "pliny": "0.2.1",
+    "pliny": "0.3.1",
     "react": "^18.3.1"
   }
 }

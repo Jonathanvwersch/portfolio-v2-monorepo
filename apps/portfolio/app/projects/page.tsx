@@ -9,6 +9,13 @@ export async function generateMetadata() {
 
 const projects: React.ComponentProps<typeof ProjectAndLearningCard>[] = [
   {
+    title: "Anthropic vs Open AI in a chess battle",
+    date: "August 2024",
+    leadingLine: "What happens when two LLM's play chess against chess other?",
+    skills: ["NextJs", "Go", "Sqlite"],
+    linkCode: "https://github.com/Jonathanvwersch/chess-ai-battle",
+  },
+  {
     title: "Version 2 of my Portfolio",
     date: "August 2024",
     leadingLine:
