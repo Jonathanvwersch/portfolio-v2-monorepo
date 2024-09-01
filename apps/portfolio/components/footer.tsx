@@ -23,13 +23,13 @@ export function Footer() {
         >
           <Github />
         </Link>
-        <Link
+        {/* <Link
           href="https://twitter.com/jonathanvwersch"
           target="_blank"
           aria-label="Click here to visit my Twitter profile"
         >
           <Twitter />
-        </Link>
+        </Link> */}
       </div>
       <p className="m-auto text-sm text-center text-gray-400">
         Built by Jonathan van Wersch. Copyright © {new Date().getFullYear()}
