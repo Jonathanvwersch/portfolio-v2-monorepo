@@ -1,0 +1,222 @@
+---
+title: 'How to Update your npm Dependencies'
+date: '2024-09-01'
+lastmod: '2024-09-01'
+draft: false
+summary: 'A comprehensive guide to managing and updating npm dependencies efficiently'
+---
+
+## Introduction
+
+If you've ever had to maintain a large Node project, you will have at some point been responsible for updating the project's dependencies. Depending on how many dependencies your project uses, this can often be a frustrating experience. As such, it is important to have a sensible system for updating your dependencies.
+
+There are two main approaches one can take when it comes to updating your project's dependencies; you can use npm's built-in update command, or you can use the library [npm-check-updates](https://www.npmjs.com/package/npm-check-updates). In this post, I will explain both methods, and why I recommend one over the other (hint: use npm-check-updates).
+
+## Table of Contents
+
+1. [Using npm update and npm outdated](#using-npm-update-and-npm-outdated)
+2. [Leveraging npm-check-updates](#leveraging-npm-check-updates)
+3. [npm update vs npm-check-updates: Key Differences](#npm-update-vs-npm-check-updates-key-differences)
+4. [Updating Dependencies in npm Workspaces](#updating-dependencies-in-npm-workspaces)
+5. [Adding an update:deps Script](#adding-an-updatedeps-script)
+6. [Configuring npm-check-updates with .ncurc.js](#configuring-npm-check-updates-with-ncurcjs)
+7. [Automating Updates with Dependabot](#automating-updates-with-dependabot)
+
+## Using npm update and npm outdated
+
+Before updating your dependencies, it's often useful to see which packages are out of date. The `npm outdated` command provides this information:
+
+```bash
+npm outdated
+```
+
+This command will display a list of your outdated dependencies, showing the current version, the wanted version (based on your semver range), and the latest version available. It's a great way to get an overview of your project's dependency status.
+
+Once you've identified outdated packages, you can use the `npm update` command to update them:
+
+```bash
+npm update
+```
+
+This command will update all the packages listed in your package.json to the latest version that satisfies the specified semver range. The behavior of npm update depends on the version range specifier used in your package.json:
+
+- Caret (^): Allows updates to the most recent minor version. For example, if you have `"express": "^4.17.1"` in your package.json, npm update will update express to the latest 4.x.x version, but won't bump it to version 5.x.x if it exists.
+- Tilde (~): Allows updates to the most recent patch version. For example, if you have `"lodash": "~4.17.1"` in your package.json, npm update will update lodash to the latest 4.17.x version, but won't bump it to 4.18.x or 5.x.x if they exist.
+
+This conservative approach helps prevent breaking changes but may mean you're missing out on significant updates, especially when it comes to major version changes.
+
+If you want to update a specific package, you can do:
+
+```bash
+npm update package-name
+```
+
+A typical workflow might look like this:
+
+1. Run `npm outdated` to see which packages have updates available.
+2. Review the list and decide which updates you want to apply.
+3. Run `npm update` to apply the updates within the current major version.
+4. If you want to update to a new major version, you'll need to update your `package.json` manually or use a tool like npm-check-updates (which we'll discuss next).
+
+While `npm update` and `npm outdated` are simple to use and come built-in with npm, they have limitations, particularly when it comes to major version updates. This is where more powerful tools like npm-check-updates come in handy.
+
+## Leveraging npm-check-updates
+
+npm-check-updates (ncu) is a more powerful tool for managing your dependencies. It allows you to see which dependencies have new versions available and optionally upgrade your package.json to use the latest versions. It also handily allows for you to create config to reject certain updates--more on this later.
+
+To use ncu, you have two options:
+
+1. Install it globally:
+
+   ```bash
+   npm install -g npm-check-updates
+   ```
+
+   Once installed, you can run:
+
+   ```bash
+   npm-check-updates
+   ```
+
+2. Use npx without installing:
+
+   ```bash
+   npx npm-check-updates
+   ```
+
+This will show you which dependencies have updates available, in a similar manner to npm outdated. To actually update your package.json, run:
+
+```bash
+npm-check-updates -u
+```
+
+or if using npx:
+
+```bash
+npx npm-check-updates -u
+```
+
+This command will, importantly, not actually install any updates. To do that you will need to run:
+
+```bash
+npm install
+```
+
+or more simply:
+
+```bash
+npm i
+```
+
+## npm update vs npm-check-updates: Key Differences
+
+While both tools aim to keep your dependencies up-to-date, they have some key differences:
+
+1. Version constraints:
+   - `npm update` respects the version constraints in your package.json.
+   - `npm-check-updates` can ignore existing constraints and update to the latest versions.
+
+2. package.json modification:
+   - `npm update` doesn't modify your package.json.
+   - `npm-check-updates` can directly update version numbers in your package.json.
+
+3. Visibility and control:
+   - `npm update` is less verbose about available updates.
+   - `npm-check-updates` shows a detailed list of available updates and allows interactive selection.
+
+4. Major version updates:
+   - `npm update` won't update to new major versions by default.
+   - `npm-check-updates` can update to the latest major versions.
+
+## Updating Dependencies in npm Workspaces
+
+If you're using npm workspaces, the process is slightly different. From the root of your project, you can run:
+
+```bash
+npm update --workspaces
+```
+
+This will update dependencies in all workspaces. If you're using ncu, you can use:
+
+```bash
+npm-check-updates -u --workspaces
+```
+
+Remember to run `npm install` after updating with ncu.
+
+## Adding an update:deps Script
+
+To make dependency updates a regular part of your workflow, you can add an update:deps script to your package.json:
+
+```json
+{
+  "scripts": {
+    "update:deps": "npx npm-check-updates -u && npm install"
+  }
+}
+```
+
+or if you are using workspaces
+
+```json
+{
+  "scripts": {
+    "update:deps": "npx npm-check-updates -w -u && npm install"
+  }
+}
+```
+
+Now you can run `npm run update:deps` to update and install in one step.
+
+## Configuring npm-check-updates with .ncurc.js
+
+Sometimes, you might need more fine-grained control over your updates. You can create a .ncurc.js file in your project root to configure ncu. Here's an example:
+
+```javascript
+module.exports = {
+  reject: ['express', 'lodash'],
+  upgrade: true,
+  target: 'minor',
+};
+```
+
+This configuration will:
+
+- Reject updates to 'express' and 'lodash'
+- Automatically upgrade the package.json
+- Only target minor version upgrades
+
+This is particularly useful when you have peer dependency issues or when you want to be more cautious with updates. Also, I find it really nice to be able to leave yourself a comment explaining why you are rejecting updates for a specific package.
+
+## Automating Updates with Dependabot
+For an even more hands-off approach, you can use GitHub's Dependabot to automate your dependency updates. To set it up, create a file at .github/dependabot.yml in your repository:
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 1
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+```
+This configuration tells Dependabot to:
+
+1. Check for npm updates
+2. Look in the root directory
+3. Check weekly
+4. Open only one pull request for all updates
+
+Dependabot will create a single pull request containing all the updates, allowing you to review changes before merging. This approach helps reduce noise and makes it easier to manage updates.
+If you want to learn more about Dependabot and its configuration options, you can refer to the official GitHub Dependabot documentation.
+
+## Last bits
+
+I tend to run my npm update:deps script once a week to maintain my codebase, but you can of course perform this less frequently if required (I think there is no value in performing this more frequently). Each time you perform an update, it's also worth checking the packages you have rejected and seeing if they can now be updated. Lastly it's in general good practice to look up the changelogs for packages whose major version is being updated as this indicates a breaking change, which may have wider implications across your own codebase. 
+
+Happy updating!
+

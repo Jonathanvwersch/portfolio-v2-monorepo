@@ -4,7 +4,6 @@ date: '2024-08-31'
 lastmod: '2024-08-31'
 draft: false
 summary: 'Lessons learned from building a scalable frontend monorepo with Typescript, Turbo and Tsup'
-images: ['/static/images/twitter-card.png']
 ---
 
 ## Introduction
@@ -17,11 +16,12 @@ If you want to skip the explanation, feel free to check out the template repo [h
 
 1. [Why I needed a monorepo](#why-i-needed-a-monorepo)
 2. [The Repository Structure](#the-repository-structure)
-3. [Apps](#apps)
-4. [Packages](#packages)
-5. [Using Turbo for the build system](#using-turbo-for-the-build-system)
-6. [Using tsup to orchestrate transpilation and type generation](#using-tsup-to-orchestrate-transpilation-and-type-generation)
-7. [Limitations of tsup](#limitations-of-tsup)
+3. [Setting up npm Workspaces](#setting-up-npm-workspaces)
+4. [Apps](#apps)
+5. [Packages](#packages)
+6. [Using Turbo for the build system](#using-turbo-for-the-build-system)
+7. [Using tsup to orchestrate transpilation and type generation](#using-tsup-to-orchestrate-transpilation-and-type-generation)
+8. [Limitations of tsup](#limitations-of-tsup)
 
 ## Why I needed a monorepo
 
@@ -60,6 +60,59 @@ my-frontend-monorepo/
 ```
 
 This structure neatly separates our concerns (apps and packages) and allows us to run commands from the root of the repository.
+
+## Setting up npm Workspaces
+
+npm Workspaces are a crucial feature for managing monorepos efficiently. They allow you to manage multiple packages within a single repository, enabling easier dependency management and simplified development workflows. Here's why they're important and how to set them up:
+
+### Importance of npm Workspaces
+
+1. **Simplified dependency management**: Workspaces allow you to hoist common dependencies to the root of your project, reducing duplication and saving disk space.
+
+2. **Local package linking**: You can easily use and develop local packages without having to manually link them or publish to a registry.
+
+3. **Consistent versioning**: It's easier to keep all your packages on the same version of shared dependencies.
+
+4. **Simplified scripts**: You can run scripts across all workspaces from the root of your project.
+
+### Setting up npm Workspaces
+
+To set up npm Workspaces in your monorepo:
+
+1. In your root `package.json`, add a `workspaces` field:
+
+```json
+{
+  "name": "my-frontend-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  // ... other fields
+}
+```
+
+This configuration tells npm that all directories inside `apps/` and `packages/` should be treated as workspaces.
+
+2. Ensure each app and package has its own `package.json` file with a unique name.
+
+3. Run `npm install` at the root of your project. npm will now recognize your workspace structure and set up symlinks between your packages.
+
+With this setup, you can now easily manage dependencies across your monorepo. For example, if `app_1` depends on `package_1`, you can add it to `app_1`'s dependencies like this:
+
+```json
+{
+  "name": "app_1",
+  "dependencies": {
+    "package_1": "*"
+  }
+}
+```
+
+npm will automatically link to the local version of `package_1` instead of trying to download it from a registry.
+
+By leveraging npm Workspaces, you simplify your development process and make it easier to manage the complexities of a monorepo structure.
 
 ## Apps
 
