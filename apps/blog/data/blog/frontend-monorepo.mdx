@@ -63,17 +63,7 @@ This structure neatly separates our concerns (apps and packages) and allows us t
 
 ## Setting up npm Workspaces
 
-npm Workspaces are a crucial feature for managing monorepos efficiently. They allow you to manage multiple packages within a single repository, enabling easier dependency management and simplified development workflows. Here's why they're important and how to set them up:
-
-### Importance of npm Workspaces
-
-1. **Simplified dependency management**: Workspaces allow you to hoist common dependencies to the root of your project, reducing duplication and saving disk space.
-
-2. **Local package linking**: You can easily use and develop local packages without having to manually link them or publish to a registry.
-
-3. **Consistent versioning**: It's easier to keep all your packages on the same version of shared dependencies.
-
-4. **Simplified scripts**: You can run scripts across all workspaces from the root of your project.
+The first core feature of this monorepo is its usage of [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces). npm Workspaces are a really useful feature of npm that allow for you to manage multiple packages within a single repository, enabling easier dependency management and simplified development workflows. 
 
 ### Setting up npm Workspaces
 
@@ -98,21 +88,6 @@ This configuration tells npm that all directories inside `apps/` and `packages/`
 2. Ensure each app and package has its own `package.json` file with a unique name.
 
 3. Run `npm install` at the root of your project. npm will now recognize your workspace structure and set up symlinks between your packages.
-
-With this setup, you can now easily manage dependencies across your monorepo. For example, if `app_1` depends on `package_1`, you can add it to `app_1`'s dependencies like this:
-
-```json
-{
-  "name": "app_1",
-  "dependencies": {
-    "package_1": "*"
-  }
-}
-```
-
-npm will automatically link to the local version of `package_1` instead of trying to download it from a registry.
-
-By leveraging npm Workspaces, you simplify your development process and make it easier to manage the complexities of a monorepo structure.
 
 ## Apps
 
