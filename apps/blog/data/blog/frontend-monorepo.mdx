@@ -1,191 +1,321 @@
 ---
 title: 'Building a Typescript-first Frontend Monorepo'
-date: '2024-08-17'
-lastmod: '2024-08-17'
+date: '2024-08-31'
+lastmod: '2024-08-31'
 draft: false
-summary: 'Lessons learned from building a scaleable frontend monorepo with Typescript, Turbo and Tsup'
+summary: 'Lessons learned from building a scalable frontend monorepo with Typescript, Turbo and Tsup'
 images: ['/static/images/twitter-card.png']
 ---
 
 ## Introduction
 
-Welcome to the release of Tailwind Nextjs Starter Blog template v2.0. This release is a major refactor of the codebase to support Nextjs App directory and React Server Components. Read on to discover the new features and how to migrate from V1.
+This post isn't about explaining what a monorepo is or why you should use one - there are plenty of good articles out there covering that already. Instead, I'm going to share what I've learned from building a solid monorepo system using tried and tested tools like tsup and Turbo, along with Typescript.
 
-<TOCInline toc={props.toc} exclude="Introduction" />
+If you want to skip the explanation, feel free to check out the template repo [here](https://github.com/Jonathanvwersch/frontend-monorepo-boilerplate). 
 
-## V1 to V2
+## Table of Contents
 
-![Github Traffic](/static/images/github-traffic.png)
+1. [Why I needed a monorepo](#why-i-needed-a-monorepo)
+2. [The Repository Structure](#the-repository-structure)
+3. [Apps](#apps)
+4. [Packages](#packages)
+5. [Using Turbo for the build system](#using-turbo-for-the-build-system)
+6. [Using tsup to orchestrate transpilation and type generation](#using-tsup-to-orchestrate-transpilation-and-type-generation)
+7. [Limitations of tsup](#limitations-of-tsup)
 
-The template was first released in January 2021 and has since been used by thousands of users. It is featured on [Next.js Templates](https://vercel.com/templates/next.js/tailwind-css-starter-blog), [Tailwind Awesome](https://www.tailwindawesome.com/resources/tailwind-nextjs-starter-blog) among other listing sites. It attracts 200+ unique visitors daily notching 1500-2000 page views, with 1.3k forks and many other clones.
+## Why I needed a monorepo
 
-Many thanks to the community of users and contributors for making this template a success! I created a small video montage of the blogs (while cleaning up the list in the readme) to showcase the diversity of the blogs created using the template and to celebrate the milestone:
+The main reason for using a monorepo was that I needed to share frontend code across multiple apps. I also wanted to be able to publish this shareable code to a registry. In my case, that was my own registry, but it could be npm or Github.
 
-<video controls>
-  <source
-    src="https://github-production-user-asset-6210df.s3.amazonaws.com/28362229/258559849-2124c81f-b99d-4431-839c-347e01a2616c.webm"
-    type="video/webm"
-  />
-</video>
+## The Repository Structure 
 
-Version 2 builds on the success of the previous version and introduces many new features and improvements. The codebase has been refactored to support Next.js App directory and React Server Components. Markdown / MDX is now processed using Contentlayer, a type-safe content SDK that validates and transforms your content into type-safe JSON data. It integrates with Pliny, a new library that provides out of the box Next.js components to enhance your static site with analytics, comments and newsletter subscription. A new command palette (⌘-k) search component is also added to the template.
+The repository was structured as follows:
 
-Let's dive into the new features and improvements in V2.
+```
+my-frontend-monorepo/
+├── apps/
+│   ├── app_1/
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── turbo.json
+│   ├── app_2/
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── turbo.json
+│   └── ...
+├── packages/
+│   ├── package_1/
+│   │   ├── src/
+│   │   ├── tsup.config.ts
+│   │   └── package.json
+│   ├── package_2/
+│   │   ├── src/
+│   │   ├── tsup.config.ts
+│   │   └── package.json
+│   ├── ...
+│   └── tsup.config.ts
+├── package.json
+├── tsconfig.json
+└── turbo.json
+```
 
-## Next.js App Directory and React Server Components
+This structure neatly separates our concerns (apps and packages) and allows us to run commands from the root of the repository.
 
-Now that [Next.js App router](https://nextjs.org/docs/app) is finally stable and is mostly feature compatible with Page Router, the codebase has been migrated to new setup. This allows for a hybrid rendering approach, with the use of React Server Components generated on the server side for faster page loads and smaller bundle sizes, while retaining the ability to sprinkle in client side React components for interactivity.[^1]
+## Apps
 
-With addition powers comes a [new paradigm](https://nextjs.org/docs/getting-started/react-essentials) to learn. I have migrated the codebase to make use of the new features as much as possible. This includes changes in the folder structure, splitting components into server vs client components, leveraging server side data fetching and using the recommended [Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata) API for SEO discoverability.
+This is where all your frontend apps go. This might include an app built using NextJs, Svelte, or whatever framework (or lack thereof) you prefer. Each app exists in its own subdirectory with its own package.json config file.
 
-While this simplifies the codebase to some extent, it makes migration from the old codebase more difficult. If you are looking to migrate, I recommend starting from a fresh template and copying over your customizations and existing content. See the [migration recommendations](#migration-recommendations) section for more details.
+If you want to import one of your internal packages into your app, you can do so by specifying the absolute path to the package in your package.json file. For example, your app's package.json might contain a dependency import that looks like this:
 
-## Typescript First
+```json
+"dependencies": {
+  "@frontend-monorepo/constants": "file:../../packages/constants",
+  "@frontend-monorepo/react-design-system": "file:../../react-design-system"
+}
+```
 
-The codebase has been migrated to Typescript. While the previous version of the template was available in both Javascript and Typescript, I decided to reduce the maintenance burden and focus on Typescript. This also allows for better type checking and code completion in IDEs.
+This is the syntax if you use npm. The syntax for pnpm is slightly different:
 
-Typescript is also a perfect match with our new type-safe markdown processor - Contentlayer.
+```json
+"dependencies": {
+  "@frontend-monorepo/constants": "workspace:*",
+  "@frontend-monorepo/react-design-system": "workspace:*"
+}
+```
 
-## Contentlayer
+## Packages
 
-[Contentlayer](https://www.contentlayer.dev/) is a content SDK that validates and transforms your content into type-safe JSON data that you can easily import into your application. It makes working with local markdown or MDX files a breeze. This replaces `MDX-bundler` and our own markdown processing workflow.
+This is where all the packages you want to share across your different apps live. Like the apps, each package exists in its own subdirectory and has its own package.json file. As for what types of packages you might have,you could have a separate package for your types, constants, and UI components.
 
-First, a content source is defined, specifying the name of the document type, the source where it is located along with the frontmatter fields and any additional computed fields that should be generated as part of the process.
+## Using Turbo for the build system
 
-```ts:contentlayer.config.ts
-export const Blog = defineDocumentType(() => ({
-  name: 'Blog',
-  filePathPattern: 'blog/**/*.mdx',
-  contentType: 'mdx',
-  fields: {
-    title: { type: 'string', required: true },
-    date: { type: 'date', required: true },
-    tags: { type: 'list', of: { type: 'string' }, default: [] },
-    ...
-  },
-  computedFields: {
-    readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
-    slug: {
-      type: 'string',
-      resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
+[Turbo](https://turbo.build/repo/docs) is crucial in this monorepo setup. It orchestrates the build process across all the apps and packages. Imagine you have 10 different packages, and the packages depend on each other. For instance, you might have a hooks package, which imports, and therefore is dependent on, a constants and types package. In that case, it is important that both the constants and types packages get built before the hooks package. Turbo builds a complete dependency graph of your codebase and allows you to build your packages in the correct topological order. In addition to this, it will cache the build outputs of each of your packages, which can greatly increase build speeds. For instance, if you were to make a change to a file in one of your packages, it will only rebuild that package (and any packages which depend on that package).
+
+To get started with Turbo, all you need to do is install Turbo and then add a turbo.json file. I recommend adding a turbo.json file to the root of your repo with a config similar to that provided below. 
+
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalDependencies": [
+    "**/.env.*",
+    "package.json",
+    "tsconfig.json",
+    "turbo.json",
+    "tsup.config.ts"
+  ],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/*", ".tsbuildinfo"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/*", ".tsbuildinfo"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
     }
-    ...
+  }
+}
+``` 
+
+The key part of the config is the dependsOn attribute, which allows you to perform the chosen command in topological order. For instance, by specifying build dependsOn build, you are basically asking Turbo to run the build command for each of your packages and apps that have the build commands as part of their package.json, but in dependency order, so that if one package depends on another, or if one of the apps depends on five of the packages, the dependent packages will be built first.
+
+Each of the pipeline commands ("build", "dev", and "lint") should also be added as scripts to your root package.json. For instance, you could have a script in your root package.json called dev which would then run Turbo, e.g.:
+
+```json
+"dev": "turbo run dev",
+```
+
+And then in each of the apps and packages you wish to run in dev mode, you should have a separate script in their respective package.json files. For instance, if you use tsup for building your packages, each package would have a dev command that looks like:
+
+```json
+"dev": "tsup --watch",
+```
+
+and then your app, if it uses NextJs, would look like:
+
+```json
+"dev": "next dev",
+```
+
+Specifying the ui as "tui" enables usage of Turbo's updated CLI user interface, which uses a handy multi-pane interface to split up your running tasks. 
+
+I'd recommend reading [Turbo's documentation](https://turbo.build/repo/docs) to get a better idea of the various config options. 
+
+## Using tsup to orchestrate transpilation and type generation
+
+With Turbo, we now have a build manager, but we still need tooling to actually perform the transpilation and type generation. The Typescript Compiler is the most obvious choice for this use, but it is really quite slow when it comes to transpilation, especially when compared with Esbuild. 
+
+[tsup](https://tsup.egoist.dev/) is an easy-to-use bundling library, which uses esbuild for transpilation, as well as minification, code splitting, and tree shaking. It uses the Typescript Compiler to handle type generation. It also has an experimental type generation mode, which uses [Microsoft's API Extractor](https://github.com/microsoft/rushstack), but we will get more into that later.
+
+To get started with tsup, you will first need to install tsup, and then you'll need to add a tsup.config.ts file. If you are using tsup to handle transpilation for both your apps and packages, then it will probably make sense to include this config file in the root of your repo. In my case, tsup was only being used by the packages; my app, a NextJs app, has its own internal build system. 
+
+A good starting point for your config file might look something like this:
+
+```typescript
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  dts: true,
+  format: ['cjs', 'esm'],
+  skipNodeModulesBundle: true, 
+  splitting: true,
+  clean: true,
+  treeshake: true, 
+  minify: true,
+  // ...
+})
+```
+
+This setup tells tsup to:
+- Use 'src/index.ts' as the entry point
+- Output both CommonJS and ES Modules formats
+- Generate type definitions
+- Clean the output directory before each build
+
+And while this would probably work on small projects, there are various optimizations you can make. 
+
+For instance, I think it's worthwhile to disable certain config attributes while in development mode. I don't see much value in enabling splitting, minification, bundling, and tree shaking, as well as outputting both cjs and esm, while developing locally, as these steps just add extra overhead and slow down the build step. 
+
+With that in mind, I think it would be sensible to update the config as follows, so as to only run these features in production (as well as main and staging):
+
+```typescript
+const env = process.env.NODE_ENV ?? "production";
+
+export default defineConfig({
+  treeshake: env !== "development",
+  splitting: env !== "development",
+  minify: env !== "development",
+  bundle: env !== "development",
+  format: env === "development" ? ["esm"] : ["esm", "cjs"],
+  // ...
+})
+```
+
+Additionally, an entry point of `src/index.ts` might be a bit too simple, or might not work at all if you do not use barrel files. A better approach would be to use a glob pattern to add all Typescript and Typescript React components, if you use React, that is:
+
+```typescript
+import * as glob from "glob";
+
+const entries = glob.sync("./src/**/*.{ts,tsx}", {
+  ignore: "**/*.spec.{ts,tsx}",
+});
+```
+
+This has improved our config, but there is still one other issue you may come across as your frontend scales: tsup's built-in type generation can cause memory leaks (see https://github.com/egoist/tsup/issues/920). 
+
+To avoid this, I recommend disabling tsup's type generation and just running a custom solution using `tsc` that runs on completion of the build step (onSuccess).
+
+```typescript
+const env = process.env.NODE_ENV ?? "production";
+
+const tscParams = ["--emitDeclarationOnly"];
+
+if (env === "development") {
+  tscParams.push("--declarationMap");
+}
+
+export default defineConfig(() => ({
+  dts: false, // Disable tsup's dts generation
+  onSuccess: async () => {
+    // Custom type generation logic using tsc
+    spawnSync("tsc", tscParams, { stdio: "inherit" });
   },
-}))
+  // ... other config
+}));
 ```
 
-Contentlayer then processes the MDX files with our desired markdown remark or rehype plugins, validates the schema, generate type definitions and output json files that can be easily imported in our pages. Hot reloading comes out of the box, so edits to the markdown files will be reflected in the browser immediately!
+This runs the Typescript Compiler without the build step and only emits type declarations. You could also set the experimentalDts config attribute to true, which would use Microsoft's API Extractor to generate the types. I've found this to be much quicker than Typescript's compiler for type generation, which is, by the way, the main bottleneck as far as speed is concerned, but its integration with tsup is still experimental and as such I have found it to lead to problems (see https://github.com/egoist/tsup/issues/1050).
 
-## Pliny
+Additionally, the function that runs on success will also output the declaration maps for your types. This is super useful as it essentially allows for the generation of source maps for .d.ts type files which map back to the original .ts source file. This means that if you use an editor like VS Code, when you click on the imported file, it will take you to the original .ts file and not the .d.ts file, which is not all that useful.
 
-A large reason for the popularity of the template was its customizability and integration with other services from analytics providers to commenting solutions. However, this means that a lot of boilerplate code has to be co-located within the template even if the user does not use the feature. Updates and bug fixes had to be copied manually to the user's codebase.
+We're now in a good place with our tsup config, but there is one last missing step: handling our app in watch mode. Ideally, if any of our apps import any of our local packages, and we run our monorepo in watch mode, we'd like to see any changes we make to those imported packages reflected in our web app. tsup has a built-in watch mode that uses the library [Chokidar](https://github.com/paulmillr/chokidar) to watch for file changes, and then rebuild those files. But tsup's built-in watch mode has some limitations. For instance, if you add a file or rename a file, tsup will not detect that change and will not build the newly added file, or change the name of the renamed file. This applies to directories as well. To get around this, I've implemented a custom watcher script which I run on top of tsup's built-in watcher.
 
-To solve this, I have abstracted the logic to a separate repository - [Pliny](https://github.com/timlrx/pliny). Pliny provides out of the box Next.js components to enhance static sites:
+## Custom watcher script
 
-- Analytics
-  - Google Analytics
-  - Plausible Analytics
-  - Simple Analytics
-  - Umami Analytics
-  - Posthog
-- Comments
-  - Disqus
-  - Giscus
-  - Utterances
-- Newsletter (uses Next 13 API Routes)
-  - Buttondown
-  - Convertkit
-  - Email Octopus
-  - Klaviyo
-  - Mailchimp
-  - Revue
-- Command palette search with tailwind style sheet
-  - Algolia
-  - Kbar (local search)
-- UI utility components
-  - Bleed
-  - Newsletter / Blog Newsletter
-  - Pre / Code block
-  - Table of Contents
+The watcher script performs four main functions:
 
-Choose your preferred service by modifying `siteMetadata.js` and changing the appropriate fields. For example to change from Umami Analytics to Plausible, we can change the following fields:
+- Runs tsup in watch mode
+- Restarts tsup when files and directories are added or deleted
+- Reconciles src and dist directories when the watcher is killed
+- Cleans up the type generation cache after each build
 
-```diff-js:siteMetadata.js
-analytics: {
--   umamiAnalytics: {
--     // We use an env variable for this site to avoid other users cloning our analytics ID
--     umamiWebsiteId: process.env.NEXT_UMAMI_ID, // e.g. 123e4567-e89b-12d3-a456-426614174000
--   },
-+    plausibleAnalytics: {
-+      plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
-+    },
-},
+Let's go over each of these in more detail:
+
+1. **Restarts tsup when files and directories are added or deleted**:
+As mentioned previously, tsup uses the library Chokidar for listening to changes to files. The custom watch script also uses Chokidar. When it detects a file or directory addition (or deletion), it will restart the tsup instance. This essentially allows tsup to update the entries it watches to include the newly added files and directories, as well as remove the deleted files and directories.
+
+```javascript
+import { watch } from "chokidar";
+
+const srcDir = path.join(cwd, "src");
+
+const watcher = watch(["**/*.{ts,tsx}", "**/.*", "**/*/", "!node_modules/**"], {
+  cwd: srcDir,
+  persistent: true,
+  ignoreInitial: true,
+  alwaysStat: true,
+  awaitWriteFinish: {
+    stabilityThreshold: 200,
+    pollInterval: 100,
+  },
+});
+
+function startTsup() {
+  tsupProcess?.kill();
+
+  tsupProcess = spawn("tsup", ["--watch"], {
+    stdio: "pipe",
+    shell: true,
+    env: { ...process.env, NODE_ENV: "development" },
+  });
+}
+
+watcher
+  .on("add", () => {
+    debounceAction(() => {
+      startTsup();
+    }, "Restarting tsup due to file addition");
+  })
+  .on("addDir", () =>
+    debounceAction(() => {
+      startTsup();
+    }, "Restarting tsup due to directory addition")
+  )
+  .on("unlink", () => {
+    debounceAction(() => {
+      startTsup();
+    }, "Restarting tsup due to file deletion");
+  })
+  .on("unlinkDir", () =>
+    debounceAction(() => {
+      startTsup();
+    }, "Restarting tsup due to directory deletion")
+  )
+  .on("error", (error) => console.error(`Watcher error: ${error}`));
 ```
 
-Changes in the configuration file gets propagated to the components automatically. No modification to the template is required.
+We debounce the calls of the startTsup function so as to prevent it from being called many times if we make a number of changes in a short period of time.
 
-Under the hood, Pliny exports high level components such as `<Analytics analyticsConfig={analyticsConfig}/>` and `<Comments commentsConfig={commentsConfig}/>` which takes in a configuration object and renders the appropriate component. Since the layouts are defined on the server side, Next.js is able to use the configuration object to determine which component to render and send only the required component bundle to the client.
+2. **Lack of reconciliation**: 
 
-## New Search Component
+Tsup doesn't reconcile the `src` and `dist` directories. What this means is that if you delete a file or directory, that file will not be automatically removed from the dist or output directory. This isn't necessarily a bad thing, but it does mean that your code could point to files which no longer exist while you're developing locally. 
 
-What's a blog in 2023 without a command palette search bar?
+To tackle this, I wrote a custom recursive function that reconciles the src and dist directories. Initially, I would run this function every time a file or directory was deleted, but this proved problematic because, as was the problem in my case, NextJs has its own caching system, and its cache might still contain those deleted files. This means that if you were to remove them from the dist during the watch process, NextJs would crash, as I discovered. This might not be the case for whatever framework you are using, and in that case, you could call the reconciler on deletion of a file or directory.
 
-One of the most highly requested features have been added 🎉! The search component supports 2 search providers - Algolia and Kbar local search.
+I instead just perform the reconcilation when the watch script is killed. 
 
-### Algolia
+3. **Build caching**: 
 
-[Algolia Docsearch](https://docsearch.algolia.com/) is popular free service used across many documentation websites. It automatically scrapes the website that has is submitted for indexing and makes the search result available via a beautiful dialog modal. The pliny component is greatly inspired by the Docusaurus implementation and comes with a stylesheet that is compatible with the Tailwind CSS theme.
+Typescript allows for you to perform incremental compilation. What this means is that if you were running the monorepo in watch mode, and you change a file, only the types for the changed file would be created, and it would not create the types for the entire directory. I've enabled incremental compilation in watch mode by passing the --incremental flag to the tsc command. This will generate a .tsbuildinfo file for each package every time you run the watch mode, which will speed up type emission. The problem is that this cache can cause problems over time, and I generally recommend removing it after you've killed your watch script, as well as when you restart the tsup instance.
 
-### Kbar
+This is why I run the cleanUpTsbuild function every time a file/directory is added or deleted, as well as when the watch script is terminated.
 
-[Kbar](https://github.com/timc1/kbar) is a fast, portable, and extensible cmd+k interface. The pliny implementation uses kbar to create a local search dialog box. The component loads a JSON file, default `search.json`, that was created in the contentlayer build process. Try pressing ⌘-k or ctrl-k to see the search bar in action!
+## The final product
 
-## Styling and Layout Updates
+So that's it. That's how my frontend monorepo runs all of my packages and apps.
 
-### Theming
-
-`tailwind.config.js` has been updated to use tailwind typography defaults where possible and to use the built-in support for dark mode via the `prose-invert` class. This replaces the previous `prose-dark` class and configuration.
-
-The primary theme color is updated from `teal` to `pink` and the primary gray theme from `neutral` to `gray`.
-
-Inter is now replaced with Space Grotesk as the default font.
-
-### New Layouts
-
-Layout components available in the `layouts` directory, provide a simple way to customize the look and feel of the blog.[^2]
-
-The downside of building a popular template is that you start seeing multiple similar sites everywhere 😆. While users are encouraged to customized the layouts to their liking, having more layout options that are easily switchable promotes diversity and perhaps can be a good starting point for further customizations.
-
-In v2, I added a new post layout - `PostBanner`. It features a large banner image and a centered content container. Check out "[Pictures of Canada](/blog/pictures-of-canada)" blog post which has been updated to use the new layout.
-
-The default blog listing layout has also been updated to include a side bar with blog tags. The search bar in the previous layout has been replace with the new command palette search. To switch back to the old layout, simply change the pages that use the `ListLayoutWithTags` component back to the original `ListLayout`.
-
-## Migration Recommendations
-
-Due to the large changes in directory structure, setup and tooling, I recommend starting from a fresh template and copying existing content, followed by incrementally migrating changes over to the new template.
-
-Styling changes should be relatively minor and can be copied over from the old `tailwind.config.js` to the new one. If copying over, you might need to add back the `prose-dark` class to components that opt into tailwind typography styling. Do modify the font import in the root layout component to use the desired font of choice.
-
-Changes to the MDX processing pipeline and schema can be easily ported to the new Contentlayer setup. If there are changes to the frontmatter fields, you can modify the document type in `contentlayer.config.ts` to include the new fields. Custom plugins can be added to the `remarkPlugins` and `rehypePlugins` properties in the `makeSource` export of `contentlayer.config.ts`.
-
-Markdown layouts are no longer sourced automatically from the `layouts` directory. Instead, they have to be specified in the `layouts` object defined in `blog/[...slug]/page.tsx`.[^3]
-
-To port over larger components or pages, I recommend first specificing it as a client component by using the `"use client"` directive. Once it renders correctly, you can split the interactive components (parts that rely on `use` hooks) as a client component and keep the remaining code as a server component. Consult the comprehensive Next.js [migration guide](https://nextjs.org/docs/app/building-your-application/upgrading/app-router-migration#migrating-from-pages-to-app) for more details.
-
-## Conclusion
-
-I hope you enjoy the new features and improvements in V2. If you have any feedback or suggestions, feel free to open an issue or reach out to me on [Twitter](https://twitter.com/timlrx).
-
-## Support
-
-Using the template? Support this effort by giving a star on GitHub, sharing your own blog and giving a shoutout on Twitter or be a project [sponsor](https://github.com/sponsors/timlrx).
-
-## Licence
-
-[MIT](https://github.com/timlrx/tailwind-nextjs-starter-blog/blob/main/LICENSE) © [Timothy Lin](https://www.timrlx.com)
-
-[^1]: The previous version injects Preact into the production build. However, this is no longer possible as it does not support React Server Components. While overall bundle size has increased to about 85kB, most of the content can be pre-rendered on the server side, resulting in a low first contentful paint and time to interactive. Using React throughtout also leads to more consistent behavior with external libraries and components.
-
-[^2]: This is different from Next.js App Directory layouts and are best thought of as reusable React containers.
-
-[^3]: This takes advantage of Server Components by making it simple to specify the layout of choice in the markdown file and match against the `layouts` object which is then used to render the appropriate layout component.
+If you want to check out the template repo, you can do so [here](https://github.com/Jonathanvwersch/frontend-monorepo-boilerplate). Feel free to fork it and use it however you want. And if you find any issues with it, please open a pull request and let me know.
