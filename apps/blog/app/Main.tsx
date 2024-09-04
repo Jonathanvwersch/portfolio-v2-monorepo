@@ -5,7 +5,8 @@ import { formatDate } from 'pliny/utils/formatDate'
 const MAX_DISPLAY = 5
 
 export default function Home({ posts }: { posts: any[] }) {
-  console.log(posts)
+ 
+ 
   return (
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -13,6 +14,9 @@ export default function Home({ posts }: { posts: any[] }) {
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Latest
           </h1>
+          <p className="text-lg font-extrabold leading-9 tracking-tight dark:text-gray-300 md:leading-14">
+           Ramblings. Occasionally insightful. Mainly about programming.
+          </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
