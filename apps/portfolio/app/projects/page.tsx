@@ -9,6 +9,20 @@ export async function generateMetadata() {
 
 const projects: React.ComponentProps<typeof ProjectAndLearningCard>[] = [
   {
+    title: "Code to Blog",
+    date: "August 2024",
+    leadingLine: "Using an AI to convert code to blog posts",
+    bulletPoints: [
+      "I wanted to see what it would be like to use an AI to convert code to blog posts",
+      "Feeding an entire codebase to an LLM is not feasible, so I instead chunked the codebase into smaller sections, generated embeddings and then stored them in a vector database",
+      "I then retrieved the relevant embeddings based on the user's prompt and fed them to an LLM",
+      "I think there is potential here as it somewhat works, but I'm just not sure if it's a worthwhile product",
+      "Was useful to learn about structuring a Python API with FastAPI",
+    ],
+    skills: ["Python", "NextJs", "Poetry", "FastAPI"],
+    linkCode: "https://github.com/Jonathanvwersch/codebase-to-blog",
+  },
+  {
     title: "Anthropic vs Open AI in a chess battle",
     date: "August 2024",
     leadingLine: "What happens when two LLM's play chess against chess other?",
