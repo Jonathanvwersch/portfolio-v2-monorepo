@@ -8,11 +8,15 @@ export async function generateMetadata() {
 
 const workExperience = [
   {
-    company: "Improbable",
-    logo: "/images/improbable.webp",
-    period: "May 2022 - Present",
+    company: "Meta",
+    logo: "/images/meta.webp",
+    period: "October 2024 - Present",
     location: "London, UK",
     roles: [
+      {
+        title: "Software Engineer",
+        responsibilities: ["Working in the mobile ads team"],
+      },
       {
         title: "Senior Software Engineer",
         responsibilities: [
