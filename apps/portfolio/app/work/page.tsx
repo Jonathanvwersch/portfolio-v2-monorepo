@@ -17,6 +17,14 @@ const workExperience = [
         title: "Software Engineer",
         responsibilities: ["Working in the mobile ads team"],
       },
+    ],
+  },
+  {
+    company: "Improbable",
+    logo: "/images/improbable.webp",
+    period: "May 2022 - October 2024",
+    location: "London, UK",
+    roles: [
       {
         title: "Senior Software Engineer",
         responsibilities: [
