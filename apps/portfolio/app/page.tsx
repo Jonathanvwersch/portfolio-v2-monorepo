@@ -22,16 +22,24 @@ export default function Home() {
         />
       </div>
       <p className="mb-4">
-        In July of 2020, I graduated with an integrated masters in mechanical
+        In July of 2020, I graduated with a bachelors and masters in mechanical
         engineering from the University of Bath receiving first-class honours —
         my passion, however, lies in software. Programming gives me the ability
         to bring my ideas to life. I find it to be a far more exciting field
         than mechanical engineering, which often moves more slowly.
-        <br /> <br />I am currently working as a senior software engineer at
-        Improbable, which creates new ways to connect, play, create and build
-        value across interconnected virtual worlds. Outside of work, I love
-        exercising and staying healthy — I am an avid runner and sports player.
-        I also love to work on engineering-related side projects.
+        <br /> <br /> I am, for better or worse, entirely self taught when it
+        comes to computer science. I have never done a bootcamp or a single,
+        formal computer science course in my life. I have, however, spent a
+        significant amount of time on my own teaching myself data structures and
+        algorithms, the basics of operating systems, compilers and computer
+        architecture, system design, the design of distributed systems, and
+        other core computer science topics. What I lack in formal education, I
+        make up with a desire to learn and improve that exceeds the majority of
+        people I know.
+        <br /> <br />I am currently working at Meta in the mobile ads team.
+        Outside of work, I love exercising and staying healthy — I am an avid
+        runner and sports player. I also love working on programming-related
+        side projects.
       </p>
     </main>
   );

@@ -52,7 +52,7 @@ export default function Skills() {
               "NextJs",
               "Redux",
               "GraphQL (Apollo)",
-              "NPM Ecosystem",
+              "npm ecosystem",
               "Cypress",
               "Jest",
               "CSS",
