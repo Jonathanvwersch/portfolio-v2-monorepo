@@ -12,7 +12,7 @@ export async function generateMetadata() {
 export default function Skills() {
   return (
     <>
-      <h1 className="font-bold mb-4 text-gray-100">SKILLS</h1>
+      <h1 className="font-bold mb-4 text-gray-100 text-center">SKILLS</h1>
       <ol className="relative border-s border-gray-700">
         <li className="mb-10 ms-6">
           <span className="absolute flex items-center justify-center w-6 h-6 bg-gray-800 rounded-full -start-3 ring-8 ring-gray-900">

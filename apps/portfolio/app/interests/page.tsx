@@ -9,7 +9,7 @@ export async function generateMetadata() {
 export default function Work() {
   return (
     <>
-      <h1 className="font-bold mb-4 text-gray-100">Interests</h1>
+      <h1 className="font-bold mb-4 text-gray-100 text-center">INTERESTS</h1>
       <ol className="relative border-s border-gray-700">
         <li className="mb-10 ms-6">
           <span className="absolute flex items-center justify-center w-6 h-6 bg-white rounded-full -start-3 ring-8 ring-gray-900">

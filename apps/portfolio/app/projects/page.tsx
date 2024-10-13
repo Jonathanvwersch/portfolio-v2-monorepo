@@ -175,7 +175,7 @@ export default function ProjectsAndLearnings({
 
   return (
     <>
-      <h1 className="font-bold mb-4">PROJECTS & LEARNINGS</h1>
+      <h1 className="font-bold mb-4 text-gray-100 text-center">PROJECTS</h1>
       <p className="mb-8">
         A collection of projects and other learnings I&apos;ve built and focused
         on outside of my day job. Some of these projects took a day, others a

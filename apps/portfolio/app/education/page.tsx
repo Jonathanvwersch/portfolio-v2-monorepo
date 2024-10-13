@@ -7,7 +7,7 @@ export async function generateMetadata() {
 export default function Education() {
   return (
     <>
-      <h1 className="font-bold mb-4">EDUCATION</h1>
+      <h1 className="font-bold mb-4 text-gray-100 text-center">EDUCATION</h1>
       <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
         University of Bath
       </h3>

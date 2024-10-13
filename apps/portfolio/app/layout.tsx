@@ -3,6 +3,7 @@ import { Roboto_Slab, Roboto } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/react";
 
 const robotoSlab = Roboto_Slab({ subsets: ["latin"] });
 const roboto = Roboto({ weight: "400", subsets: ["latin"] });
@@ -45,9 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Analytics />
       <body className={[robotoSlab.className, roboto.className].join(" ")}>
-        <div className="container mx-auto px-4 py-8 max-w-4xl pt-10 sm:pt-20 w-full flex flex-col h-screen">
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-20">
+        <div className="container mx-auto px-4 py-8 max-w-4xl pt-6 sm:pt-20 w-full flex flex-col h-screen">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-20">
             <Nav />
             <main className="w-full">{children}</main>
           </div>

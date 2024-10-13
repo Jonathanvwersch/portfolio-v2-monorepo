@@ -4,8 +4,8 @@ import { IconType } from "./types";
 export const Logo = ({ color, size }: IconType) => {
   return (
     <svg
-      width={size ?? 64}
-      height={size ?? 64}
+      width={size ?? 48}
+      height={size ?? 48}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

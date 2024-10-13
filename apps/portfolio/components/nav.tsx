@@ -42,11 +42,11 @@ export function Nav() {
   );
 
   return (
-    <div className="flex flex-col gap-8">
+    <aside className="flex flex-col gap-8">
       <div className="mx-auto sm:mx-0 flex items-center justify-center">
         <Logo />
       </div>
-      <nav className="mb-8 font-robotoSlab mx-auto">
+      <nav className="mb-6 font-robotoSlab mx-auto">
         <ul className="flex flex-row sm:flex-col align-center gap-3 flex-wrap mx-auto sm:mx-0 justify-center max-w-80">
           {navItems.map((item) => (
             <li key={item.href}>
@@ -55,9 +55,7 @@ export function Nav() {
                 target={item.target}
                 href={item.href || "#"}
                 className={`block px-3 py-2 rounded-md text-white font-bold transition-colors
-                  ${
-                    pathname === item.href ? "bg-gray-800" : "hover:bg-gray-800"
-                  }`}
+              ${pathname === item.href ? "bg-gray-800" : "hover:bg-gray-800"}`}
               >
                 {item.label}
               </Link>
@@ -65,6 +63,6 @@ export function Nav() {
           ))}
         </ul>
       </nav>
-    </div>
+    </aside>
   );
 }

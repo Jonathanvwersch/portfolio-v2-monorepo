@@ -4,7 +4,7 @@ import ProfilePhoto from "../public/images/profile-photo.webp";
 export default function Home() {
   return (
     <main>
-      <h1 className="font-bold mb-4">JONATHAN VAN WERSCH</h1>{" "}
+      <h1 className="font-bold mb-4 text-center">JONATHAN VAN WERSCH</h1>{" "}
       <p className="mb-4">
         Hello, my name is Jonathan! I come from a mixed background — I was born
         in the United States but my father is from the Netherlands and my mother

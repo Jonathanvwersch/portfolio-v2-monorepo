@@ -68,7 +68,7 @@ const workExperience = [
 export default function Work() {
   return (
     <>
-      <h1 className="font-bold mb-4 text-gray-100">WORK</h1>
+      <h1 className="font-bold mb-4 text-gray-100 text-center">WORK</h1>
       <ol className="relative border-s border-gray-700">
         {workExperience.map((job, index) => (
           <li key={index} className="mb-10 ms-6">
