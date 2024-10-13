@@ -46,8 +46,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Analytics />
       <body className={[robotoSlab.className, roboto.className].join(" ")}>
+        <Analytics />
         <div className="container mx-auto px-4 py-8 max-w-4xl pt-6 sm:pt-20 w-full flex flex-col h-screen">
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-20">
             <Nav />
