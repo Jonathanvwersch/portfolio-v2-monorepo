@@ -31,6 +31,7 @@ export function Nav() {
       { href: "/work", label: "Work" },
       { href: "/education", label: "Education" },
       { href: "/projects", label: "Projects" },
+      { href: "/travel", label: "Travel" },
       {
         target: "_blank",
         href: RESUME_LINK,
@@ -46,8 +47,8 @@ export function Nav() {
       <div className="mx-auto sm:mx-0 flex items-center justify-center">
         <Logo />
       </div>
-      <nav className="mb-6 font-robotoSlab mx-auto">
-        <ul className="flex flex-row sm:flex-col align-center gap-3 flex-wrap mx-auto sm:mx-0 justify-center max-w-80">
+      <nav className="mb-6 font-robotoSlab mx-auto text-sm">
+        <ul className="flex flex-row sm:flex-col align-center gap-3 flex-wrap mx-auto sm:mx-0 justify-center">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
