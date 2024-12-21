@@ -3,7 +3,7 @@ import ProfilePhoto from "../public/images/profile-photo.webp";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <h1 className="font-bold mb-4 text-center">JONATHAN VAN WERSCH</h1>{" "}
       <p className="mb-4">
         Hello, my name is Jonathan! I come from a mixed background — I was born
@@ -41,6 +41,6 @@ export default function Home() {
         runner and sports player. I also love working on programming-related
         side projects.
       </p>
-    </main>
+    </>
   );
 }

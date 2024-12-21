@@ -3,11 +3,24 @@ import { Logo } from "@packages/assets/icons/logo";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { RESUME_LINK } from "@/constants/resume";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useRef } from "react";
 
 export function Nav() {
   const pathname = usePathname();
   const [blogUrl, setBlogUrl] = useState("");
+  const scrollContainerRef = useRef<HTMLUListElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     // Set the blog URL once the component has mounted (client-side only)
@@ -21,17 +34,18 @@ export function Nav() {
   const navItems = useMemo(
     () => [
       { href: "/", label: "Home" },
+      { href: "/skills", label: "Skills" },
+      { href: "/work", label: "Work" },
+      { href: "/education", label: "Education" },
+      { href: "/projects", label: "Projects" },
+      { href: "/travel", label: "Travel" },
+      { href: "/sports", label: "Sports" },
       {
         href: blogUrl,
         label: "Blog",
         prefetch: false,
         target: "_blank",
       },
-      { href: "/skills", label: "Skills" },
-      { href: "/work", label: "Work" },
-      { href: "/education", label: "Education" },
-      { href: "/projects", label: "Projects" },
-      { href: "/travel", label: "Travel" },
       {
         target: "_blank",
         href: RESUME_LINK,
@@ -43,20 +57,69 @@ export function Nav() {
   );
 
   return (
-    <aside className="flex flex-col gap-8">
+    <aside className="flex flex-col gap-8 sm:sticky static top-20 sm:h-[calc(100vh-4rem)]">
       <div className="mx-auto sm:mx-0 flex items-center justify-center">
         <Logo />
       </div>
-      <nav className="mb-6 font-robotoSlab mx-auto text-sm">
-        <ul className="flex flex-row sm:flex-col align-center gap-3 flex-wrap mx-auto sm:mx-0 justify-center">
-          {navItems.map((item) => (
-            <li key={item.href}>
+      <nav className="mb-6 font-robotoSlab mx-auto text-sm w-full relative">
+        <div className="sm:hidden absolute left-0 top-0 bottom-0 flex items-center z-10">
+          <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#030712] to-transparent" />
+          <button
+            onClick={scrollLeft}
+            className="p-2 bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg relative ml-1"
+            aria-label="Scroll left"
+          >
+            <svg
+              className="w-4 h-4 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="sm:hidden absolute right-0 top-0 bottom-0 flex items-center z-10">
+          <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#030712] to-transparent" />
+          <button
+            onClick={scrollRight}
+            className="p-2 bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg relative mr-1"
+            aria-label="Scroll right"
+          >
+            <svg
+              className="w-4 h-4 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+        <ul
+          ref={scrollContainerRef}
+          className="flex flex-row sm:flex-col gap-3 mx-auto sm:mx-0 justify-start sm:justify-center overflow-x-auto scrollbar-hide whitespace-nowrap sm:whitespace-normal px-8 sm:px-0"
+        >
+          {navItems.map((item, index) => (
+            <li key={item.href} className="flex-shrink-0">
               <Link
                 prefetch={item.prefetch}
                 target={item.target}
                 href={item.href || "#"}
                 className={`block px-3 py-2 rounded-md text-white font-bold transition-colors
-              ${pathname === item.href ? "bg-gray-800" : "hover:bg-gray-800"}`}
+                  ${pathname === item.href ? "bg-gray-800" : "hover:bg-gray-800"}
+                  ${index === 0 ? "sm:ml-0 ml-8" : ""}
+                  ${index === navItems.length - 1 ? "sm:mr-0 mr-8" : ""}`}
               >
                 {item.label}
               </Link>

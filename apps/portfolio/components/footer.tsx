@@ -1,9 +1,7 @@
-"use client";
 
 import Link from "next/link";
 import { LinkedIn } from "@packages/assets/icons/linkedin";
 import { Github } from "@packages/assets/icons/github";
-import { Twitter } from "@packages/assets/icons/twitter";
 
 export function Footer() {
   return (

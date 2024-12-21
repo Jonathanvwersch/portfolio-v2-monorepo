@@ -9,6 +9,20 @@ export async function generateMetadata() {
 
 const projects: React.ComponentProps<typeof ProjectAndLearningCard>[] = [
   {
+    title: "Lexikal",
+    date: "November 2024",
+    leadingLine: "A document Q&A tool that allows you to upload documents and ask questions about them",
+    bulletPoints: [
+      "Built a tool that chunks and embeds uploaded documents for semantic search and question answering",
+      "Implemented document highlighting to show the exact sections in PDFs where answers are sourced from",
+      "Used vector embeddings and semantic search to find relevant document chunks for accurate responses",
+      "Designed a clean and intuitive interface for document upload and interaction",
+      "The next step was to add the ability to create flashcards from the chunks for space repetition based learning, but I moved on from this project as I found two others working on a problem I found more interesting"
+    ],
+    skills: ["Python", "Next.js", "TypeScript", "Vector Embeddings", "PDF Processing", "Semantic Search"],
+    linkCode: "https://github.com/Jonathanvwersch/lexikal/tree/main/www",
+  },
+  {
     title: "Semantic Code Search Tool",
     date: "September 2024",
     leadingLine: "Using vector embeddings to search code",
@@ -164,6 +178,17 @@ const learnings: React.ComponentProps<typeof ProjectAndLearningCard>[] = [
       "Spent a lot of time on LeetCode practicing algorithms and data structures",
     linkProject: "https://leetcode.com/u/JvW/",
   },
+  {
+    title: "Nand2Tetris",
+    date: "November 2024 - December 2024",
+    leadingLine: "Building a modern computer from first principles",
+    bulletPoints: [
+      "Working through the Nand2Tetris course to understand computer architecture from the ground up",
+      "Building a complete computer system starting from NAND gates, through logic gates, ALU, CPU, and up to a high-level language",
+      "Implementing components in HDL (Hardware Description Language) and learning about hardware simulation",
+    ],
+    skills: ["Computer Architecture", "HDL"],
+  },
 ];
 
 export default function ProjectsAndLearnings({
@@ -186,22 +211,22 @@ export default function ProjectsAndLearnings({
       <div className="mb-8 flex space-x-2">
         <Link
           href="/projects?tab=projects"
-          className={`px-4 py-2 rounded-full text-sm transition-colors duration-200 ease-in-out
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ease-in-out ring-1
             ${
               activeTab === "projects"
-                ? "bg-gray-800 text-white"
-                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                ? "bg-gray-800 text-white ring-gray-800"
+                : "bg-transparent text-gray-300 ring-gray-700 hover:text-white"
             }`}
         >
           PROJECTS
         </Link>
         <Link
           href="/projects?tab=learnings"
-          className={`px-4 py-2 rounded-full text-sm transition-colors duration-200 ease-in-out
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ease-in-out ring-1
             ${
               activeTab === "learnings"
-                ? "bg-gray-800 text-white"
-                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                ? "bg-gray-800 text-white ring-gray-800"
+                : "bg-transparent text-gray-300 ring-gray-700 hover:text-white"
             }`}
         >
           LEARNINGS

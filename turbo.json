@@ -28,6 +28,18 @@
     "dev": {
       "dependsOn": ["^build:packages:dev"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".tsbuildinfo"]
+    },
+    "ts:lint": {
+      "outputs": []
+    },
+    "ts:lint:fix": {
+      "outputs": []
+    },
+    "format": {
+      "outputs": []
+    },
+    "format:fix": {
+      "outputs": []
     }
   }
 }
