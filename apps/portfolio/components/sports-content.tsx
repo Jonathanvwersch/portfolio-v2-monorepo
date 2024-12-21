@@ -43,7 +43,7 @@ export function SportsContent() {
           >
             MARATHONS
           </button>
-          <button
+          {/* <button
             onClick={() => setActiveTab("half-marathons")}
             className={`px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ease-in-out ring-1
               ${
@@ -53,7 +53,7 @@ export function SportsContent() {
               }`}
           >
             HALF MARATHONS
-          </button>
+          </button> */}
         </div>
 
         <div className="flex flex-col space-y-6">

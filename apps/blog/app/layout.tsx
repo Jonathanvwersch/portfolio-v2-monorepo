@@ -11,6 +11,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import { Roboto, Roboto_Slab } from 'next/font/google'
+import { ReactNode } from 'react'
 
 const robotoSlab = Roboto_Slab({ subsets: ['latin'] })
 const roboto = Roboto({ weight: '400', subsets: ['latin'] })
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const basePath = process.env.BASE_PATH || ''
 
   return (

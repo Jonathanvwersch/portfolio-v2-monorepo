@@ -36,6 +36,7 @@
     "@eslint/js": "^9.17.0",
     "@jest/types": "29.6.3",
     "@microsoft/api-extractor": "7.48.1",
+    "@next/eslint-plugin-next": "^15.1.2",
     "@types/react-simple-maps": "3.0.6",
     "@typescript-eslint/eslint-plugin": "8.18.1",
     "@typescript-eslint/parser": "8.18.1",

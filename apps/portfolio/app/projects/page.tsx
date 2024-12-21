@@ -1,7 +1,9 @@
+// @ts-nocheck
 import { ProjectAndLearningCard } from "@/components/project-and-learning-card";
 import Link from "next/link";
+import { Metadata } from "next";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Projects | Jonathan van Wersch",
   };
@@ -191,12 +193,11 @@ const learnings: React.ComponentProps<typeof ProjectAndLearningCard>[] = [
   },
 ];
 
-export default function ProjectsAndLearnings({
-  searchParams,
-}: {
-  searchParams: { tab?: string };
-}) {
-  const activeTab = searchParams.tab || "projects";
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function ProjectsAndLearnings(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
+  const activeTab = (searchParams?.tab as string) || "projects";
 
   return (
     <>

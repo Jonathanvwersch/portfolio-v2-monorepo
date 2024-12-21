@@ -70,9 +70,6 @@ const nextConfig = {
   eslint: {
     dirs: ['app', 'components', 'layouts', 'scripts'],
   },
-  experimental: {
-    esmExternals: 'loose', // This might help with ES modules issues
-  },
   transpilePackages: ['@packages/assets'],
   images: {
     remotePatterns: [
