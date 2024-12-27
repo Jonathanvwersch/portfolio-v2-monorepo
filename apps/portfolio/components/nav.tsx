@@ -1,55 +1,65 @@
-"use client";
-import { Logo } from "@packages/assets/icons/logo";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { RESUME_LINK } from "@/constants/resume";
-import { useMemo, useEffect, useState, useRef } from "react";
+'use client';
+import { Logo } from '@packages/assets/icons/logo';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { RESUME_LINK } from '@/constants/resume';
+import { useMemo, useEffect, useState, useRef } from 'react';
 
 export function Nav() {
   const pathname = usePathname();
-  const [blogUrl, setBlogUrl] = useState("");
+  const [blogUrl, setBlogUrl] = useState('');
   const scrollContainerRef = useRef<HTMLUListElement>(null);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+      const container = scrollContainerRef.current;
+      if (container.scrollLeft <= 0) {
+        // If at the start, jump to end
+        container.scrollLeft = container.scrollWidth;
+      } else {
+        container.scrollBy({ left: -200, behavior: 'smooth' });
+      }
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+      const container = scrollContainerRef.current;
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+        // If at the end (with small buffer), jump to start
+        container.scrollLeft = 0;
+      } else {
+        container.scrollBy({ left: 200, behavior: 'smooth' });
+      }
     }
   };
 
   useEffect(() => {
     // Set the blog URL once the component has mounted (client-side only)
     const host = window.location.host;
-    const blogHost = host.startsWith("www.")
-      ? host.replace("www.", "blog.")
-      : `blog.${host}`;
+    const blogHost = host.startsWith('www.') ? host.replace('www.', 'blog.') : `blog.${host}`;
     setBlogUrl(`${window.location.protocol}//${blogHost}`);
   }, []);
 
   const navItems = useMemo(
     () => [
-      { href: "/", label: "Home" },
-      { href: "/skills", label: "Skills" },
-      { href: "/work", label: "Work" },
-      { href: "/education", label: "Education" },
-      { href: "/projects", label: "Projects" },
-      { href: "/travel", label: "Travel" },
-      { href: "/sports", label: "Sports" },
+      { href: '/', label: 'Home' },
+      { href: '/skills', label: 'Skills' },
+      { href: '/work', label: 'Work' },
+      { href: '/education', label: 'Education' },
+      { href: '/projects', label: 'Projects' },
+      { href: '/travel', label: 'Travel' },
+      { href: '/sports', label: 'Sports' },
       {
         href: blogUrl,
-        label: "Blog",
+        label: 'Blog',
         prefetch: false,
-        target: "_blank",
+        target: '_blank',
       },
       {
-        target: "_blank",
+        target: '_blank',
         href: RESUME_LINK,
-        label: "Resume",
+        label: 'Resume',
         prefetch: false,
       },
     ],
@@ -97,12 +107,7 @@ export function Nav() {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
@@ -115,11 +120,11 @@ export function Nav() {
               <Link
                 prefetch={item.prefetch}
                 target={item.target}
-                href={item.href || "#"}
+                href={item.href || '#'}
                 className={`block px-3 py-2 rounded-md text-white font-bold transition-colors
-                  ${pathname === item.href ? "bg-gray-800" : "hover:bg-gray-800"}
-                  ${index === 0 ? "sm:ml-0 ml-8" : ""}
-                  ${index === navItems.length - 1 ? "sm:mr-0 mr-8" : ""}`}
+                  ${pathname === item.href ? 'bg-gray-800' : 'hover:bg-gray-800'}
+                  ${index === 0 ? 'sm:ml-0 ml-8' : ''}
+                  ${index === navItems.length - 1 ? 'sm:mr-0 mr-8' : ''}`}
               >
                 {item.label}
               </Link>
