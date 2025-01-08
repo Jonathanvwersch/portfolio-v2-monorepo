@@ -51,12 +51,6 @@ export function Nav() {
       { href: '/travel', label: 'Travel' },
       { href: '/sports', label: 'Sports' },
       {
-        href: blogUrl,
-        label: 'Blog',
-        prefetch: false,
-        target: '_blank',
-      },
-      {
         target: '_blank',
         href: RESUME_LINK,
         label: 'Resume',
